@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="uk" data-theme="dark">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Edit Note</title>
+        <style>
+            body {
+                background-color: #222;
+                color: #eee;
+                font-family: sans-serif;
+            }
+            textarea {
+                width: 100%;
+                height: 80px;
+                background: #333;
+                color: #eee;
+                border: 1px solid #555;
+                padding: 5px;
+            }
+            button {
+                height: 3vh;
+                width: 75px;
+            }
+            a {
+                color: #cfcfcf;
+            }
+        </style>
+    </head>
+    <body>
+        <main>
+            <h2>Edit Note</h2>
+            <form method="post">
+                <textarea name="content">{{ note.content }}</textarea><br />
+                <button type="submit">Save</button>
+                <a href="/">Cancel</a>
+            </form>
+        </main>
+    </body>
+</html>

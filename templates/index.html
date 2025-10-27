@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="uk" data-theme="dark">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>WEBLAB3 | by Ig4Er</title>
+        <style>
+            body {
+                background-color: #222222;
+                color: #eeeeee;
+                letter-spacing: 0.35px;
+                font-family: sans-serif;
+            }
+            a {
+                color: #cfcfcf;
+                text-decoration: underline;
+            }
+            a:visited {
+                color: #b6b6b6;
+                text-decoration: underline;
+            }
+            button {
+                height: 3vh;
+                width: 75px;
+                text-align: center;
+            }
+            .e {
+                color: #dd4646;
+            }
+            .b {
+                border: 1px solid white;
+                padding: 5px 10px;
+                margin-bottom: 10px;
+            }
+            .it {
+                font-style: italic;
+                font-size: 8pt;
+                margin-bottom: 10px;
+            }
+            form.add-form {
+                margin-bottom: 20px;
+            }
+            textarea {
+                width: 100%;
+                height: 60px;
+                background: #333;
+                color: #eee;
+                border: 1px solid #555;
+                padding: 5px;
+            }
+        </style>
+        <meta name="color-scheme" content="dark" />
+    </head>
+    <body>
+        <main>
+            <form class="add-form" method="post" action="/add">
+                <textarea
+                    name="content"
+                    placeholder="Write a new note..."
+                ></textarea
+                ><br />
+                <button type="submit">Add</button>
+            </form>
+
+            {% for note in notes %}
+            <div class="b">
+                <div class="it">{{ note.timestamp }}</div>
+                {{ note.content | e }}
+                <br /><br />
+                <a href="/edit/{{ note.id }}">Edit</a>
+                <a href="/delete/{{ note.id }}" class="e">Delete</a>
+            </div>
+            {% endfor %}
+        </main>
+    </body>
+</html>

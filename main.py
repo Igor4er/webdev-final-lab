@@ -1,15 +1,20 @@
 from flask import Flask, render_template, request, redirect, url_for
-from peewee import SqliteDatabase, Model, TextField, DateTimeField, OperationalError
+from peewee import SqliteDatabase, Model, TextField, DateTimeField, OperationalError, PostgresqlDatabase
 import datetime
 import os
 
-db = SqliteDatabase(os.environ.get("DB_PATH", "db.sqlite3"), pragmas=[('journal_mode', 'wal')])
+DB_PATH = os.environ.get("DB_PATH", "db.sqlite3")
+if "postgres" in DB_PATH:
+    db = PostgresqlDatabase(DB_PATH)
+else:
+    db = SqliteDatabase(DB_PATH, pragmas=[('journal_mode', 'wal')])
 
 MSG = os.environ.get("MSG", "")
 
 class Note(Model):
     content = TextField()
     timestamp = DateTimeField(default=datetime.datetime.now)
+    modified = DateTimeField(default=datetime.datetime.now)
     remote_addr = TextField()
 
     class Meta:
@@ -59,6 +64,7 @@ def edit_note(note_id):
         new_content = request.form.get("content", "").strip()
         if new_content:
             note.content = new_content
+            note.modified = datetime.datetime.now()
             note.save()
         return redirect(url_for("index"))
     return render_template("edit.html", note=note)

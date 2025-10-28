@@ -23,6 +23,13 @@ class Note(Model):
 
 app = Flask(__name__)
 
+
+@app.before_request
+def before_request():
+    db.connect(reuse_if_open=True)
+
+
+
 @app.route("/")
 def index(*args, **kwargs):
     remote_addr = request.headers.get("Do-Connecting-Ip", request.remote_addr)
@@ -36,10 +43,6 @@ def index(*args, **kwargs):
             return index(afterrun=True)
         else:
             raise E
-    except InterfaceError:
-        if db.is_closed():
-           db.connect()
-           return index(afterrun=True)
 
 
 @app.route("/add", methods=["POST"])

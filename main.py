@@ -10,6 +10,7 @@ MSG = os.environ.get("MSG", "")
 class Note(Model):
     content = TextField()
     timestamp = DateTimeField(default=datetime.datetime.now)
+    remote_addr = TextField()
 
     class Meta:
         database = db
@@ -18,9 +19,10 @@ app = Flask(__name__)
 
 @app.route("/")
 def index(*args, **kwargs):
+
     try:
         notes = Note.select().order_by(Note.timestamp.desc())
-        return render_template("index.html", notes=notes, msg=MSG)
+        return render_template("index.html", notes=notes, msg=MSG, remote_addr=request.remote_addr)
     except OperationalError as E:
         print(E)
         init_tables()
@@ -34,18 +36,21 @@ def index(*args, **kwargs):
 def add_note():
     content = request.form.get("content", "").strip()
     if content:
-        Note.create(content=content)
+        Note.create(content=content, remote_addr=request.remote_addr)
     return redirect(url_for("index"))
 
 @app.route("/delete/<int:note_id>")
 def delete_note(note_id):
+    note = Note.get_or_none(Note.id == note_id)
+    if not note or note.remote_addr != request.remote_addr:
+        return redirect(url_for("index"))
     Note.delete_by_id(note_id)
     return redirect(url_for("index"))
 
 @app.route("/edit/<int:note_id>", methods=["GET", "POST"])
 def edit_note(note_id):
     note = Note.get_or_none(Note.id == note_id)
-    if not note:
+    if not note or note.remote_addr != request.remote_addr:
         return redirect(url_for("index"))
     if request.method == "POST":
         new_content = request.form.get("content", "").strip()

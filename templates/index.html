@@ -71,8 +71,10 @@
                 <div class="it">{{ note.timestamp }}</div>
                 {{ note.content | e }}
                 <br /><br />
+                {% if note.remote_addr == remote_addr %}
                 <a href="/edit/{{ note.id }}">Edit</a>
                 <a href="/delete/{{ note.id }}" class="e">Delete</a>
+                {% endif %}
             </div>
             {% endfor %}
         </main>

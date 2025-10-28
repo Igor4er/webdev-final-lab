@@ -59,7 +59,6 @@ def edit_note(note_id):
         new_content = request.form.get("content", "").strip()
         if new_content:
             note.content = new_content
-            note.timestamp = datetime.datetime.now()
             note.save()
         return redirect(url_for("index"))
     return render_template("edit.html", note=note)

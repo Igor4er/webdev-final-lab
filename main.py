@@ -19,10 +19,10 @@ app = Flask(__name__)
 
 @app.route("/")
 def index(*args, **kwargs):
-    print(request.headers)
+    remote_addr = request.headers.get("Do-Connecting-Ip", request.remote_addr)
     try:
         notes = Note.select().order_by(Note.timestamp.desc())
-        return render_template("index.html", notes=notes, msg=MSG, remote_addr=request.remote_addr)
+        return render_template("index.html", notes=notes, msg=MSG, remote_addr=remote_addr)
     except OperationalError as E:
         print(E)
         init_tables()
@@ -34,23 +34,26 @@ def index(*args, **kwargs):
 
 @app.route("/add", methods=["POST"])
 def add_note():
+    remote_addr = request.headers.get("Do-Connecting-Ip", request.remote_addr)
     content = request.form.get("content", "").strip()
     if content:
-        Note.create(content=content, remote_addr=request.remote_addr)
+        Note.create(content=content, remote_addr=remote_addr)
     return redirect(url_for("index"))
 
 @app.route("/delete/<int:note_id>")
 def delete_note(note_id):
+    remote_addr = request.headers.get("Do-Connecting-Ip", request.remote_addr)
     note = Note.get_or_none(Note.id == note_id)
-    if not note or note.remote_addr != request.remote_addr:
+    if not note or note.remote_addr != remote_addr:
         return redirect(url_for("index"))
     Note.delete_by_id(note_id)
     return redirect(url_for("index"))
 
 @app.route("/edit/<int:note_id>", methods=["GET", "POST"])
 def edit_note(note_id):
+    remote_addr = request.headers.get("Do-Connecting-Ip", request.remote_addr)
     note = Note.get_or_none(Note.id == note_id)
-    if not note or note.remote_addr != request.remote_addr:
+    if not note or note.remote_addr != remote_addr:
         return redirect(url_for("index"))
     if request.method == "POST":
         new_content = request.form.get("content", "").strip()

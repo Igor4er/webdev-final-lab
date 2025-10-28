@@ -10,6 +10,7 @@ else:
     db = SqliteDatabase(DB_PATH, pragmas=[('journal_mode', 'wal')])
 
 MSG = os.environ.get("MSG", "")
+VER = os.environ.get("VER", "latest (probably)")
 
 class Note(Model):
     content = TextField()
@@ -27,7 +28,7 @@ def index(*args, **kwargs):
     remote_addr = request.headers.get("Do-Connecting-Ip", request.remote_addr)
     try:
         notes = Note.select().order_by(Note.timestamp.desc())
-        return render_template("index.html", notes=notes, msg=MSG, remote_addr=remote_addr)
+        return render_template("index.html", notes=notes, msg=MSG, remote_addr=remote_addr, ver=VER)
     except (OperationalError, ProgrammingError) as E:
         print(E)
         init_tables()

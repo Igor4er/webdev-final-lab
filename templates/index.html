@@ -68,7 +68,9 @@
 
             {% for note in notes %}
             <div class="b">
-                <div class="it">{{ note.timestamp }}</div>
+                <div class="it">
+                    from {{note.remote_addr}} at {{ note.timestamp }}
+                </div>
                 {{ note.content | e }}
                 <br /><br />
                 {% if note.remote_addr == remote_addr %}

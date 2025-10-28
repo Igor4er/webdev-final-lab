@@ -1,5 +1,5 @@
 from flask import Flask, render_template, request, redirect, url_for
-from peewee import SqliteDatabase, Model, TextField, DateTimeField, OperationalError, PostgresqlDatabase, ProgrammingError
+from peewee import SqliteDatabase, Model, TextField, DateTimeField, OperationalError, PostgresqlDatabase, ProgrammingError, InterfaceError
 import datetime
 import os
 
@@ -36,6 +36,10 @@ def index(*args, **kwargs):
             return index(afterrun=True)
         else:
             raise E
+    except InterfaceError:
+        if db.is_closed():
+           db.connect()
+           return index(afterrun=True)
 
 
 @app.route("/add", methods=["POST"])

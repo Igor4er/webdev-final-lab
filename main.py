@@ -41,6 +41,8 @@ def index(*args, **kwargs):
 def add_note():
     remote_addr = request.headers.get("Do-Connecting-Ip", request.remote_addr)
     content = request.form.get("content", "").strip()
+    if len(content) > 2048:
+        return redirect(url_for("index"))
     if content:
         Note.create(content=content, remote_addr=remote_addr)
     return redirect(url_for("index"))
@@ -62,6 +64,8 @@ def edit_note(note_id):
         return redirect(url_for("index"))
     if request.method == "POST":
         new_content = request.form.get("content", "").strip()
+        if len(new_content) > 2048:
+            return redirect(url_for("index"))
         if new_content:
             note.content = new_content
             note.modified = datetime.datetime.now()

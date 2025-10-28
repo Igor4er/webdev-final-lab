@@ -48,6 +48,9 @@
             .mt {
                 margin-top: 16px;
             }
+            .ml {
+                margin-left: 6pt;
+            }
             form.add-form {
                 margin-bottom: 20px;
             }
@@ -93,7 +96,7 @@
                 <br /><br />
                 {% if note.remote_addr == remote_addr %}
                 <a href="/edit/{{ note.id }}">Edit</a>
-                <a href="/delete/{{ note.id }}" class="e">Delete</a>
+                <a href="/delete/{{ note.id }}" class="e ml">Delete</a>
                 {% endif %}
             </div>
             {% endfor %}

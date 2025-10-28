@@ -48,4 +48,5 @@ def edit_note(note_id):
 if __name__ == "__main__":
     db.connect()
     db.create_tables([Note])
+    db.close()
     app.run("127.0.0.1", 8043)

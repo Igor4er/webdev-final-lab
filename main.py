@@ -1,5 +1,5 @@
 from flask import Flask, render_template, request, redirect, url_for
-from peewee import SqliteDatabase, Model, TextField, DateTimeField, OperationalError, PostgresqlDatabase
+from peewee import SqliteDatabase, Model, TextField, DateTimeField, OperationalError, PostgresqlDatabase, ProgrammingError
 import datetime
 import os
 
@@ -28,7 +28,7 @@ def index(*args, **kwargs):
     try:
         notes = Note.select().order_by(Note.timestamp.desc())
         return render_template("index.html", notes=notes, msg=MSG, remote_addr=remote_addr)
-    except OperationalError as E:
+    except (OperationalError, ProgrammingError) as E:
         print(E)
         init_tables()
         if not kwargs.get("afterrun", False):

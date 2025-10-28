@@ -1,9 +1,11 @@
 from flask import Flask, render_template, request, redirect, url_for
-from peewee import SqliteDatabase, Model, TextField, DateTimeField
+from peewee import SqliteDatabase, Model, TextField, DateTimeField, OperationalError
 import datetime
 import os
 
 db = SqliteDatabase(os.environ.get("DB_PATH", "db.sqlite3"), pragmas=[('journal_mode', 'wal')])
+
+MSG = os.environ.get("MSG", "")
 
 class Note(Model):
     content = TextField()
@@ -16,8 +18,12 @@ app = Flask(__name__)
 
 @app.route("/")
 def index():
-    notes = Note.select().order_by(Note.timestamp.desc())
-    return render_template("index.html", notes=notes)
+    try:
+        notes = Note.select().order_by(Note.timestamp.desc())
+        return render_template("index.html", notes=notes, msg=MSG)
+    except OperationalError:
+        init_tables()
+
 
 @app.route("/add", methods=["POST"])
 def add_note():
@@ -45,8 +51,13 @@ def edit_note(note_id):
         return redirect(url_for("index"))
     return render_template("edit.html", note=note)
 
-if __name__ == "__main__":
+
+def init_tables():
     db.connect()
     db.create_tables([Note])
     db.close()
+
+
+if __name__ == "__main__":
+    init_tables()
     app.run("127.0.0.1", 8043)

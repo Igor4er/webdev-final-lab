@@ -3,7 +3,7 @@ from peewee import SqliteDatabase, Model, TextField, DateTimeField
 import datetime
 import os
 
-db = SqliteDatabase(os.environ["DB_PATH"], pragmas=[('journal_mode', 'wal')])
+db = SqliteDatabase(os.environ.get("DB_PATH", "db.sqlite3"), pragmas=[('journal_mode', 'wal')])
 
 class Note(Model):
     content = TextField()

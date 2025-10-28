@@ -21,7 +21,8 @@ def index():
     try:
         notes = Note.select().order_by(Note.timestamp.desc())
         return render_template("index.html", notes=notes, msg=MSG)
-    except OperationalError:
+    except OperationalError as E:
+        print(E)
         init_tables()
 
 
@@ -53,9 +54,7 @@ def edit_note(note_id):
 
 
 def init_tables():
-    db.connect()
     db.create_tables([Note])
-    db.close()
 
 
 if __name__ == "__main__":

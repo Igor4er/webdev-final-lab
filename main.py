@@ -19,7 +19,7 @@ app = Flask(__name__)
 
 @app.route("/")
 def index(*args, **kwargs):
-
+    print(request.headers)
     try:
         notes = Note.select().order_by(Note.timestamp.desc())
         return render_template("index.html", notes=notes, msg=MSG, remote_addr=request.remote_addr)

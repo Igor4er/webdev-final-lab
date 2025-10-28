@@ -1,8 +1,9 @@
 from flask import Flask, render_template, request, redirect, url_for
 from peewee import SqliteDatabase, Model, TextField, DateTimeField
 import datetime
+import os
 
-db = SqliteDatabase("db.sqlite3", pragmas=[('journal_mode', 'wal')])
+db = SqliteDatabase(os.environ["DB_PATH"], pragmas=[('journal_mode', 'wal')])
 
 class Note(Model):
     content = TextField()

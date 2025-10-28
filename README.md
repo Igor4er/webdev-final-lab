@@ -10,7 +10,7 @@
 ### Старт проєкту
 ```shell
 cd {PROJECT_DIR}
-uv run main.py
+DB_PATH=db.sqlite3 uv run main.py
 ```
 Сервер запуститься на порті 8043
 

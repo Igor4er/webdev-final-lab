@@ -17,13 +17,17 @@ class Note(Model):
 app = Flask(__name__)
 
 @app.route("/")
-def index():
+def index(*args, **kwargs):
     try:
         notes = Note.select().order_by(Note.timestamp.desc())
         return render_template("index.html", notes=notes, msg=MSG)
     except OperationalError as E:
         print(E)
         init_tables()
+        if not kwargs.get("afterrun", False):
+            return index(afterrun=True)
+        else:
+            raise E
 
 
 @app.route("/add", methods=["POST"])
